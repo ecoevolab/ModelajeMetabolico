@@ -69,22 +69,20 @@ docker cp /ruta/a/gurobi.lic comets-gurobi:/root/gurobi.lic
    i. Simular el crecimiento de **Varivorax paradoxus** 
     ii. Graficar su biomasa en el tiempo
 ```{phyton}
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+import os
+os.environ['GUROBI_COMETS_HOME'] = '/opt/gurobi1003/linux64'
+os.environ['GRB_LICENSE_FILE'] = '/root/gurobi.lic'
+os.environ['LD_LIBRARY_PATH'] = '/opt/gurobi1003/linux64/lib'
 
-biomass_lb = "/home/abigaylmontantearenas/Documents/proyecto_tesis/04_resultados/prueba/resultado_ST00110_prokka_carveme_lb/biomass.txt"
+%cd /home/comets/notebooks
 
-df_bio_lb = pd.read_csv(biomass_lb, sep=r"\s+", header=None)
-
-plt.figure(figsize=(8, 5))
-plt.plot(df_bio_lb[0], df_bio_lb[4], color="#2ca02c", linewidth=2.5)
-plt.title("Biomasa: Condición LB", fontweight='bold')
-plt.xlabel("Tiempo")
-plt.ylabel("Biomasa (gDW)")
-plt.tight_layout()
-plt.show()
+!python3 ModelajeMetabolico/scr/sim_syncom_comets.py \
+  --gem_path ModelajeMetabolico/modelos \
+  --strains Rerythropolis \
+  --media lb \
+  --cycles 1000 \
+  --threads 1 \
+  --outdir ./Rerythropolis
 ```
     
 ![This is an alt text.](./biomasa_lb.png "This is a sample image.")
