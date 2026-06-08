@@ -12,7 +12,8 @@ Crear una carpeta y dentro un archivo llamado `Dockerfile` (sin extensión):
 
 ```{}
 mkdir ~/comets_imagen
-nano ~/comets_imagen/Dockerfile
+nano ~/comets_imagen/Dockerfile #LINUS MAC 
+ni ~/comets_imagen/Dockerfile #version WINDOWS
 ``` 
 
  Contenido del Dockerfile:
