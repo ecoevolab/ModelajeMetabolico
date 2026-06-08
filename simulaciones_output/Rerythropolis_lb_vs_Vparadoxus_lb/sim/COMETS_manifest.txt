@@ -1,0 +1,6 @@
+ModelFileName: ./ST00094_prokka_carveme_lb.cmd
+ModelFileName: ./ST00110_prokka_carveme_lb.cmd
+FluxFileName: ../flux.txt
+MediaFileName: ../media.txt
+BiomassFileName: ../biomass.txt
+TotalBiomassFileName: ../total_biomass.txt
