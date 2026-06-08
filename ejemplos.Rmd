@@ -96,21 +96,45 @@ os.environ['LD_LIBRARY_PATH'] = '/opt/gurobi1003/linux64/lib'
 
     ii. Graficar su biomasa en el tiempo
 ```{python}
-# Cargar paquetes para graficar 
+# Cargar paquetes
 import pandas as pd
 import matplotlib.pyplot as plt
-# Cargar archivo de biomasa
-biomasa = pd.read_csv('/home/comets/notebooks/Rerythropolis/total_biomass.txt', sep='\t')
+
+# Cargar archivo
+biomasa = pd.read_csv(
+    "/home/comets/notebooks/Rerythropolis/biomass.txt",
+    sep=r"\s+",
+    header=None
+)
+
 # Renombrar columnas
-biomasa.columns = ['ciclo', 'biomasa']
+biomasa.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
 
 # Graficar
 plt.figure(figsize=(8, 5))
-plt.plot(biomasa['ciclo'], biomasa['biomasa'], color='steelblue', linewidth=2)
-plt.xlabel('Ciclos', fontsize=13)
-plt.ylabel('Biomasa (g DW)', fontsize=13)
-plt.title('Curva de crecimiento Rhodoccoccus erythropolis', fontsize=14)
+
+plt.plot(
+    biomasa["ciclo"],
+    biomasa["biomasa"],
+    linewidth=2
+)
+
+plt.xlabel("Ciclos", fontsize=13)
+plt.ylabel("Biomasa (g DW)", fontsize=13)
+
+plt.title(
+    "Curva de crecimiento Rhodococcus erythropolis",
+    fontsize=14
+)
+
 plt.grid(True, alpha=0.3)
+
 plt.tight_layout()
 plt.show()
 ```
@@ -238,7 +262,6 @@ else:
 
     plt.tight_layout()
     plt.show()
-
     ```
 
 ![This is an alt text.](./met_lb.png "This is a sample image.")
@@ -247,7 +270,124 @@ else:
  i. Simular el crecimiento de **Varivorax paradoxus**  en otro medio de cultivo
  revisar la función para ver que otros medios hay 
 ```{}
-python3 ModelajeMetabolico/scr/sim_syncom_comets.py --help
+# Cargar paquetes
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Cargar archivo de biomasa LB
+biomasa_lb = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_lb/biomass.txt"
+)
+
+df_lb = pd.read_csv(
+    biomasa_lb,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_lb.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Cargar archivo de biomasa Marine
+biomasa_marine = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_marine/biomass.txt"
+)
+
+df_marine = pd.read_csv(
+    biomasa_marine,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_marine.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Graficar Marine
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    df_marine["ciclo"],
+    df_marine["biomasa"],
+    linewidth=2.5
+)
+
+plt.title(
+    "Biomasa: Condición Marine",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.tight_layout()
+plt.show()
+
+
+# Comparación de crecimiento
+ciclo_corte = min(
+    df_lb["ciclo"].max(),
+    df_marine["ciclo"].max()
+)
+
+# Filtrar al mismo número de ciclos
+df_lb_filt = df_lb[
+    df_lb["ciclo"] <= ciclo_corte
+]
+
+df_marine_filt = df_marine[
+    df_marine["ciclo"] <= ciclo_corte
+]
+
+
+# Graficar comparación
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    df_lb_filt["ciclo"],
+    df_lb_filt["biomasa"],
+    linewidth=2.5,
+    label="LB"
+)
+
+plt.plot(
+    df_marine_filt["ciclo"],
+    df_marine_filt["biomasa"],
+    linewidth=2.5,
+    label="Marine"
+)
+
+plt.title(
+    "Comparación de Crecimiento",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.legend(
+    title="Medio de cultivo"
+)
+
+plt.tight_layout()
+plt.show()
 ```
 
     ```{python}
