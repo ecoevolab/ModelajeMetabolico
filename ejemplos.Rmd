@@ -10,10 +10,6 @@ output: html_document
 ## 1. Contenedos COMETS-GUROBI
 Crear una carpeta y dentro un archivo llamado `Dockerfile` (sin extensión):
 
-```{r}
-install.packages("reticulate")
-```
-
 ```{}
 mkdir ~/comets_imagen
 nano ~/comets_imagen/Dockerfile
@@ -37,6 +33,10 @@ ENV LD_LIBRARY_PATH=/opt/gurobi1003/linux64/lib
 ## 2. Crear la imagen 
 ```{}
 docker build -t comets-gurobi:1.0 ~/comets_imagen/
+
+#mac
+
+docker build --platform linux/amd64 -t comets-gurobi:1.0 ~/comets_imagen/
 ```
 
 **comets-gurobi es el nombre de la imagen**
@@ -72,10 +72,11 @@ Después tendrás que agregar especificaciones para crear tu contenedor
     iii. Migrar a Docker
     cp /home/abigaylmontantearenas/Downloads/gurobi.lic comets-gurobi:1.0:/root/gurobi.lic
 
- 
+
+
 #### 1. Crecimiento aislado 
    i. Simular el crecimiento de **Varivorax paradoxus** 
-```{phyton}
+```{}
 import os
 os.environ['GUROBI_COMETS_HOME'] = '/opt/gurobi1003/linux64'
 os.environ['GRB_LICENSE_FILE'] = '/root/gurobi.lic'
@@ -198,7 +199,7 @@ if metabolitos:
 
     v. Graficar un metabolito que sea de tu interés
     
-    ```{phyton}
+    ```{python}
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -248,7 +249,7 @@ else:
 python3 ModelajeMetabolico/scr/sim_syncom_comets.py --help
 ```
 
-    ```{phyton}
+    ```{python}
 # Cargar paquetes
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -490,4 +491,11 @@ else:
 
     plt.tight_layout()
     plt.show()
+```
+
+
+### instala git para clonar repos 
+```{}
+apt-get update && apt-get install -y git
+git --version
 ```
