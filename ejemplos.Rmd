@@ -6,39 +6,11 @@ output: html_document
 ---
  **Requisitos previos**
 
- 
-## 1. Contenedos COMETS-GUROBI
-Crear una carpeta y dentro un archivo llamado `Dockerfile` (sin extensión):
+## 1. Instalar COMETS
 
-```{}
-mkdir ~/comets_imagen
-nano ~/comets_imagen/Dockerfile #LINUS MAC 
-ni ~/comets_imagen/Dockerfile #version WINDOWS
-``` 
+dukovski/comets-lab:1.0
 
- Contenido del Dockerfile:
-```{}
-FROM dukovski/comets-lab:v1.1
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-RUN curl -O https://packages.gurobi.com/10.0/gurobi10.0.3_linux64.tar.gz && \
-    tar -xzf gurobi10.0.3_linux64.tar.gz -C /opt/ && \
-    rm gurobi10.0.3_linux64.tar.gz
-
-ENV GUROBI_COMETS_HOME=/opt/gurobi1003/linux64
-ENV GRB_LICENSE_FILE=/root/gurobi.lic
-ENV LD_LIBRARY_PATH=/opt/gurobi1003/linux64/lib
-```
-
-## 2. Crear la imagen 
-```{}
-docker build -t comets-gurobi:1.0 ~/comets_imagen/
-
-#mac
-
-docker build --platform linux/amd64 -t comets-gurobi:1.0 ~/comets_imagen/
-```
 
 **comets-gurobi es el nombre de la imagen**
 
@@ -64,34 +36,26 @@ Después tendrás que agregar especificaciones para crear tu contenedor
 | Host path | `/ruta/carpeta/que/quieres/montar` |
 | Container path | `/home/ruta/docker/` |
 
-## Paso 4. Licencia Gurobi 
+############################
+apt-get update
+apt-get install git
 
-    i. Web License Service de Gurobi [sitio web](https://www.gurobi.com/academics)
- 
-    ii: Descargar 
-    
-    iii. Migrar a Docker
-    cp /home/abigaylmontantearenas/Downloads/gurobi.lic comets-gurobi:1.0:/root/gurobi.lic
+git clone https://github.com/ecoevolab/ModelajeMetabolico
+
+#export GUROBI_COMETS_HOME=/opt/gurobi1003/linux64
+#export GRB_LICENSE_FILE=/root/gurobi.lic
+#export LD_LIBRARY_PATH=/opt/gurobi1003/linux64/lib:$LD_LIBRARY_PATH
+
+#python3 -m pip install ortools
+
+python3 ModelajeMetabolico/scr/sim_syncom_comets.py --gem_path ModelajeMetabolico/modelos --strains Rerythropolis --media lb --cycles 10000 --threads 1 --outdir ./Rerythropolis
 
 
 
 #### 1. Crecimiento aislado 
    i. Simular el crecimiento de **Varivorax paradoxus** 
 ```{}
-import os
-os.environ['GUROBI_COMETS_HOME'] = '/opt/gurobi1003/linux64'
-os.environ['GRB_LICENSE_FILE'] = '/root/gurobi.lic'
-os.environ['LD_LIBRARY_PATH'] = '/opt/gurobi1003/linux64/lib'
-
-%cd /home/comets/notebooks
-
-!python3 ModelajeMetabolico/scr/sim_syncom_comets.py \
-  --gem_path ModelajeMetabolico/modelos \
-  --strains Rerythropolis \
-  --media lb \
-  --cycles 1000 \
-  --threads 1 \
-  --outdir ./Rerythropolis
+python3 ModelajeMetabolico/scr/sim_syncom_comets.py --gem_path ModelajeMetabolico/modelos --strains Rerythropolis --media lb --media_dil 3 --cycles 10000 --threads 1 --outdir ./Rerythropolis_dil3
 ```
 
     ii. Graficar su biomasa en el tiempo
@@ -102,7 +66,7 @@ import matplotlib.pyplot as plt
 
 # Cargar archivo
 biomasa = pd.read_csv(
-    "/home/comets/notebooks/Rerythropolis/biomass.txt",
+    "./Rerythropolis3/biomass.txt",
     sep=r"\s+",
     header=None
 )
@@ -136,7 +100,12 @@ plt.title(
 plt.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.show()
+
+plt.savefig(
+    "./Rerythropolis_dil3/curva_crecimiento.png",
+    dpi=300,
+    bbox_inches="tight"
+)
 ```
 ![This is an alt text.](/home/abigaylmontantearenas/Documents/ModelajeMetabolico/visualmaterial/biomasa_lb.png "This is a sample image.")
 
@@ -635,8 +604,3 @@ else:
 ```
 
 
-### instala git para clonar repos 
-```{}
-apt-get update && apt-get install -y git
-git --version
-```
