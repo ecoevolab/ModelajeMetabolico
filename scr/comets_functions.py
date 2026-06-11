@@ -290,7 +290,7 @@ def media(name="lb", dil=1, vol=1):
         
     # 4. MEDIO MÍNIMO: M9 ACETATO
     elif name == "m9_acetate":
-        res = media("m9", dil=dil)
+        res = media("m9", dil)
         if "glc__D_e" in res: 
             del res["glc__D_e"]
         res["ac_e"] = 0.04 * dil      
