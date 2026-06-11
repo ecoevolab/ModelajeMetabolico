@@ -272,10 +272,35 @@ def media(name="lb", dil=1):
     elif name == "marine+ribose":
         res = media("marine", dil)
         res["2dr5p_e"] = 0.1 * dil
+
+    elif name == "m9":
+        res = {
+            "glc__D_e": 0.02 * dil,  
+            "nh4_e": 0.0187 * dil,    
+            "pi_e": 0.0422 * dil,     
+            "so4_e": 0.0020 * dil,    
+            "k_e": 0.0220 * dil,      
+            "na1_e": 0.0840 * dil,    
+            "cl_e": 0.0150 * dil,     
+            "mg2_e": 0.0020 * dil,    
+            "o2_e": 0.0182 ,           
+            "h2o_e": 55.509 ,          
+            "h_e": 1E-07              
+        }
+        
+    # 4. MEDIO MÍNIMO: M9 ACETATO
+    elif name == "m9_acetate":
+        res = media("m9", dil=dil)
+        if "glc__D_e" in res: 
+            del res["glc__D_e"]
+        res["ac_e"] = 0.04 * dil      
+
+    # Manejo de error si el usuario pide un medio que no existe
     else:
-        raise ValueError(f"Unrecognized media '{name}'. Supported: 'lb', 'marine'")
+        raise ValueError(f"Unrecognized media '{name}'. Supported: 'lb', 'lb+ribose', 'marine', 'marine+ribose', 'm9', 'm9_acetate'")
 
     return res
+
        
 
 def load_strains(layout, models, initial_mass = 1e-8):
