@@ -284,6 +284,7 @@ def load_strains(layout, models, initial_mass = 1e-8):
         gem_i = cobra.io.read_sbml_model(gem)
         # print(f"=========================Modelo cargado para {strain}==============")
         gem_i = c.model(gem_i)
+        gem_i.optimizer = "GLOP"
         # print(f"=========================Modelo procesado para {strain}==============")
         gem_i.id = strain
         # print(f"=========================ID establecido para {strain}==============")
@@ -291,7 +292,7 @@ def load_strains(layout, models, initial_mass = 1e-8):
         # print(f"=========================Biomasa inicial para {strain}==============")
         layout.add_model(gem_i)
         # print(f"=========================Modelo añadido {strain}==============")
-    
+
     return layout
 
     
