@@ -6,8 +6,8 @@ output: html_document
 ---
  **Requisitos previos**
 
-## 1. Instalar COMETS
-
+## 1. Contenedor de COMETS en DockerDesktop 
+```te
 dukovski/comets-lab:1.0
 
 
@@ -55,7 +55,7 @@ python3 ModelajeMetabolico/scr/sim_syncom_comets.py --gem_path ModelajeMetabolic
 #### 1. Crecimiento aislado 
    i. Simular el crecimiento de **Varivorax paradoxus** 
 ```{}
-python3 ModelajeMetabolico/scr/sim_syncom_comets.py --gem_path ModelajeMetabolico/modelos --strains Rerythropolis --media lb --media_dil 3 --cycles 10000 --threads 1 --outdir ./Rerythropolis_dil3
+python3 ModelajeMetabolico/scr/sim_syncom_comets.py --gem_path ModelajeMetabolico/modelos --strains Rerythropolis --media lb --cycles 10000 --threads 1 --outdir ./Rerythropolis_dil3
 ```
 
     ii. Graficar su biomasa en el tiempo
@@ -84,7 +84,7 @@ biomasa.columns = [
 plt.figure(figsize=(8, 5))
 
 plt.plot(
-    biomasa["ciclo"],
+    biomasa["tiempo"],
     biomasa["biomasa"],
     linewidth=2
 )
@@ -602,5 +602,375 @@ else:
     plt.tight_layout()
     plt.show()
 ```
+
+#######################
+#### 2. Medio de cultivo 
+ i. Simular el crecimiento de **Varivorax paradoxus**  en otro medio de cultivo
+ revisar la función para ver que otros medios hay 
+```text
+# Cargar paquetes
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Cargar archivo de biomasa LB
+biomasa_lb = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_lb/biomass.txt"
+)
+
+df_lb = pd.read_csv(
+    biomasa_lb,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_lb.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Cargar archivo de biomasa Marine
+biomasa_marine = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_marine/biomass.txt"
+)
+
+df_marine = pd.read_csv(
+    biomasa_marine,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_marine.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Graficar Marine
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    df_marine["ciclo"],
+    df_marine["biomasa"],
+    linewidth=2.5
+)
+
+plt.title(
+    "Biomasa: Condición Marine",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.tight_layout()
+plt.show()
+
+
+# Comparación de crecimiento
+ciclo_corte = min(
+    df_lb["ciclo"].max(),
+    df_marine["ciclo"].max()
+)
+
+# Filtrar al mismo número de ciclos
+df_lb_filt = df_lb[
+    df_lb["ciclo"] <= ciclo_corte
+]
+
+df_marine_filt = df_marine[
+    df_marine["ciclo"] <= ciclo_corte
+]
+
+
+# Graficar comparación
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    df_lb_filt["ciclo"],
+    df_lb_filt["biomasa"],
+    linewidth=2.5,
+    label="LB"
+)
+
+plt.plot(
+    df_marine_filt["ciclo"],
+    df_marine_filt["biomasa"],
+    linewidth=2.5,
+    label="Marine"
+)
+
+plt.title(
+    "Comparación de Crecimiento",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.legend(
+    title="Medio de cultivo"
+)
+
+plt.tight_layout()
+plt.show()
+```
+
+```text
+# Cargar paquetes
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Cargar archivo de biomasa LB
+biomasa_lb = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_lb/biomass.txt"
+)
+
+df_lb = pd.read_csv(
+    biomasa_lb,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_lb.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Cargar archivo de biomasa Marine
+biomasa_marine = (
+    "/home/comets/notebooks/"
+    "ModelajeMetabolico/simulaciones_output/"
+    "Rerythropolis_marine/biomass.txt"
+)
+
+df_marine = pd.read_csv(
+    biomasa_marine,
+    sep=r"\s+",
+    header=None
+)
+
+# Renombrar columnas
+df_marine.columns = [
+    "ciclo",
+    "col2",
+    "col3",
+    "modelo",
+    "biomasa"
+]
+
+
+# Graficar Marine
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    df_marine["ciclo"],
+    df_marine["biomasa"],
+    linewidth=2.5
+)
+
+plt.title(
+    "Biomasa: Condición Marine",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.tight_layout()
+plt.show()
+
+
+# Comparación de crecimiento
+ciclo_corte = min(
+    df_lb["ciclo"].max(),
+    df_marine["ciclo"].max()
+)
+
+# Filtrar al mismo número de ciclos
+df_lb_filt = df_lb[
+    df_lb["ciclo"] <= ciclo_corte
+]
+
+df_marine_filt = df_marine[
+    df_marine["ciclo"] <= ciclo_corte
+]
+
+
+# Graficar comparación
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    df_lb_filt["ciclo"],
+    df_lb_filt["biomasa"],
+    linewidth=2.5,
+    label="LB"
+)
+
+plt.plot(
+    df_marine_filt["ciclo"],
+    df_marine_filt["biomasa"],
+    linewidth=2.5,
+    label="Marine"
+)
+
+plt.title(
+    "Comparación de Crecimiento",
+    fontweight="bold"
+)
+
+plt.xlabel("Ciclo")
+plt.ylabel("Biomasa (gDW)")
+
+plt.legend(
+    title="Medio de cultivo"
+)
+
+plt.tight_layout()
+plt.show()
+
+```
+  
+
+    iii. Graficar su consumo y secreción de metabolitos COMPARACION metabolitos
+```text
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Cargar datos LB
+flujos_lb = ("/home/comets/notebooks/ModelajeMetabolico/simulaciones_output/Rerythropolis_lb/Rerythropolis_lb_exchange_fluxes.tsv"
+            )
+
+df_flujos_lb = pd.read_csv(
+    flujos_lb,
+    sep="\t"
+)
+
+# Cargar datos Marine
+flujos_marine = (
+    "/home/comets/notebooks/ModelajeMetabolico/simulaciones_output/Rerythropolis_marine/Rerythropolis_marine_exchanges_fluxes.tsv"
+)
+
+df_flujos_marine = pd.read_csv(
+    flujos_marine,
+    sep="\t"
+)
+
+
+# Seleccionar metabolito
+metabolito_seleccionado = "EX_cl_e"
+
+# Definir ciclo máximo
+ciclo_corte = 1000
+
+
+# Filtrar ciclos
+df_lb_filt = df_flujos_lb[
+    df_flujos_lb["cycle"] <= ciclo_corte
+]
+
+df_marine_filt = df_flujos_marine[
+    df_flujos_marine["cycle"] <= ciclo_corte
+]
+
+
+# Separar cycle
+cycle_lb = df_lb_filt["cycle"]
+cycle_marine = df_marine_filt["cycle"]
+
+
+# Calcular tasas de cambio
+df_tasas_lb = (
+    df_flux_lb.diff().fillna(0)
+)
+
+df_tasas_marine = (
+    df_flux_marine.diff().fillna(0)
+)
+
+
+# Revisar si el metabolito existe
+if (
+    metabolito_seleccionado
+    not in df_tasas_lb.columns
+    or
+    metabolito_seleccionado
+    not in df_tasas_marine.columns
+):
+    print(
+        f"Error: {metabolito_seleccionado} no existe."
+    )
+
+else:
+
+    plt.figure(figsize=(9, 5))
+
+    # LB
+    plt.plot(
+        cycle_lb,
+        df_tasas_lb[
+            metabolito_seleccionado
+        ],
+        linewidth=2.5,
+        label="LB"
+    )
+
+    # Marine
+    plt.plot(
+        cycle_marine,
+        df_tasas_marine[
+            metabolito_seleccionado
+        ],
+        linewidth=2.5,
+        label="Marine"
+    )
+
+    plt.yscale(
+        "symlog",
+        linthresh=1e-9
+    )
+
+    plt.axhline(
+        0,
+        linestyle="--",
+        alpha=0.5
+    )
+
+    plt.title(
+        f"Tasa de cambio de "
+        f"{metabolito_seleccionado}",
+        fontweight="bold"
+    )
+
+    plt.xlabel("Ciclo")
+    plt.ylabel("ΔFlux")
+
+    plt.legend(
+        title="Medio de cultivo"
+    )
+
+    plt.tight_layout()
+    plt.show()
+```
+
 
 
