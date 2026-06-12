@@ -17,7 +17,7 @@ git clone https://github.com/ecoevolab/ModelajeMetabolico
 
 ## 2. **Ejemplo**
 ##### i. Crecimiento aislado
-   i. Simular el crecimiento de solo una bacateria en el tiempo
+   a) Simular el crecimiento de solo una bacateria en el tiempo
 ```texto
 !python3 /workspace/ModelajeMetabolico/scr/sim_syncom_comets.py \
 --gem_path /workspace/ModelajeMetabolico/modelos \
@@ -28,7 +28,7 @@ git clone https://github.com/ecoevolab/ModelajeMetabolico
 --outdir ./ecoli
 ```
 
-  ii. ¿Cómo crece que bacteria? Graficar su biomasa. Graficar su biomasa en el tiempo
+  b) ¿Cómo crece la bacteria? Graficar su biomasa en el tiempo.
 ```texto
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -75,7 +75,7 @@ plt.savefig(
 plt.show()
 ```
 
-  iii. ¿Qué metabolitos tienen un flujo? Fitrar metabolicos cuyos flujos cambien en el tiempo
+  c) ¿Qué metabolitos tienen un flujo metabólico activo? Fitrar metabolítos.
 
 ```texto
 import pandas as pd
@@ -104,8 +104,8 @@ for met in metabolitos:
     print(met)
 ```
 
-   iv. ¿Cómo cambia el flujo EX_glc__D_e (glucosa) ? 
-   Graficar como cambia el flujo de EX_glc__D_e en el tiempo
+   d). ¿Cómo cambia el flujo de EX_glc__D_e (glucosa) ? 
+   Graficar el cambio del flujo de EX_glc__D_e en el tiempo.
 
 ```text
 import matplotlib.pyplot as plt
@@ -149,7 +149,8 @@ else:
 ```
 
  
-   v. ¿De que depende el crecimiento de una bacteria? Comparar como cambia la misma bacteria si cambia el medio de cultivo.
+   e) ¿De qué depende el crecimiento de una bacteria? Comparar cómo cambia la biomasa de una misma bacteria 
+   si cambia el medio de cultivo.
 ```text 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -218,31 +219,21 @@ plt.show()
 
 ## 3. Ejercicio
 
-i. ¿Cómo crecen las bacterias cuándo están interactuando? Simulacion bacteria-bacteria.
+a). ¿Cómo crecen las bacterias cuándo están interactuando? Simulacion bacteria-bacteria.
 
-   a. En la carpeta de modelos dentro de `ModelosMetabólicos` encontrarás diferentes modelos metabólicos. 
+   * En la carpeta de modelos dentro de `ModelosMetabólicos` encontrarás diferentes modelos metabólicos. Simula cómo crecen juntas *Escherichia_coli* y *Bacillus_subtilis*. 
+   Agrega con el argumento --strains el nombre de los modelos metabólicos de ambas.
+  
+   * Compara cómo crecen ambas bacterias cuando están interactuando, con ayuda del siguiente código, grafica en una sola imagen el crecimiento de ambas, agrega el archivo 
+   de biomass.txt con la ruta correspondiente a la carpeta que generaste anteriormente.
    
-   Simula cómo crecen juntas *Escherichia coli* y *Bacillus_subtilis*. Agrega en con el argumento 
-   --strains el nombre de los modelos metabolicos de ambas
-```text
-!python3 /workspace/ModelajeMetabolico/scr/sim_syncom_comets.py \
---gem_path /workspace/ModelajeMetabolico/modelos \
---strains Escherichia_coli Bacillus_subtilis\
---initial_mass 1e-5 \
---cycles 3500 \
---media  m9 \
---outdir ./ecoli_vs_bsubtilis
-```
-  
-  
-  b. Compara como crecen ambas bacterias cuando están interactuando, con ayuda del siguiente codigo, grafica en una sola imagen el crecimiento de ambas.
 ```text
 import pandas as pd
 import matplotlib.pyplot as plt
 
 # Cargar archivo
 biomasa = pd.read_csv(
-    "/workspace/ecoli_vs_bsubtilis/biomass.txt",
+    "/workspace/ecoli_vs_bacillus_subtilis/biomass.txt",
     sep=r"\s+",
     header=None
 )
@@ -289,239 +280,25 @@ plt.tight_layout()
 plt.show()
 ```
 
-ii. ¿Qué está consumiendo cada bacteria? 
-
-  a. con ayuda de los archivos de flujos metabolico (Bacillus_subtilis_exchange_fluxes.tsv y Escherichia_coli_exchange_fluxes)
-    filtra los metabolicos que cada una esta consumiendo.
+  * Con ayuda del archivo de flujos metabólicos de E. coli (Escherichia_coli_exchange_fluxes.tsv)
+    filtra los metabolitos que tienen flujo metabólico activo.
     
-```text
-import pandas as pd
-
-# Cargar datos
-flujos = "/workspace/ecoli_vs_bsubtilis/Escherichia_coli_exchange_fluxes.tsv"
-
-df_flujos = pd.read_csv(
-    flujos,
-    sep="\t"
-)
-
-# Separar cycle
-cycle = df_flujos["cycle"]
-
-# Quedarse solo con columnas numéricas
-df_flux = df_flujos.drop(columns=["cycle"])
-df_flux = df_flux.apply(pd.to_numeric, errors="coerce")
-
-# Metabolitos con al menos un valor distinto de 0
-metabolitos = df_flux.columns[(df_flux != 0).any(axis=0)].tolist()
-
-print(f"{len(metabolitos)} metabolitos con flujo distinto de 0:\n")
-
-for met in metabolitos:
-    print(met)
-```
-
-```text
-import pandas as pd
-
-# Cargar datos
-flujos = "/workspace/ecoli_vs_bsubtilis/Bacillus_subtilis_exchange_fluxes.tsv"
-
-df_flujos = pd.read_csv(
-    flujos,
-    sep="\t"
-)
-
-# Separar cycle
-cycle = df_flujos["cycle"]
-
-# Quedarse solo con columnas numéricas
-df_flux = df_flujos.drop(columns=["cycle"])
-df_flux = df_flux.apply(pd.to_numeric, errors="coerce")
-
-# Metabolitos con al menos un valor distinto de 0
-metabolitos = df_flux.columns[(df_flux != 0).any(axis=0)].tolist()
-
-print(f"{len(metabolitos)} metabolitos con flujo distinto de 0:\n")
-
-for met in metabolitos:
-    print(met)
-```
-  b. ¿cuantos y cuales metabolitos tienen flujos metabolitos activos para cada bacteria?
-  Ecoli: 24 metabolitos con flujo distinto de 0:
-
-EX_4hba_e
-EX_4hbald_e
-EX_ca2_e
-EX_cl_e
-EX_co2_e
-EX_cobalt2_e
-EX_cu2_e
-EX_etoh_e
-EX_fe2_e
-EX_fe3_e
-EX_for_e
-EX_glc__D_e
-EX_h2o_e
-EX_h_e
-EX_k_e
-EX_mg2_e
-EX_mn2_e
-EX_na1_e
-EX_nh4_e
-EX_o2_e
-EX_pi_e
-EX_so4_e
-EX_val__L_e
-EX_zn2_e
-
-B. subtilis: 
-29 metabolitos con flujo distinto de 0:
-
-EX_4hba_e
-EX_4hbald_e
-EX_R_3hcmrs7e_e
-EX_R_3hpt_e
-EX_ca2_e
-EX_cl_e
-EX_co2_e
-EX_cobalt2_e
-EX_cu2_e
-EX_etoh_e
-EX_fe2_e
-EX_fe3_e
-EX_for_e
-EX_glc__D_e
-EX_h2o_e
-EX_h_e
-EX_hco3_e
-EX_k_e
-EX_lac__L_e
-EX_mg2_e
-EX_mn2_e
-EX_na1_e
-EX_nh4_e
-EX_o2_e
-EX_pi_e
-EX_ppap_e
-EX_so4_e
-EX_val__L_e
-EX_zn2_e
-
-  ¿que metabolitos tienen flujos metabolicos activos unicos en cada bacteria? 
-  E. coli: EX_zn2_e
-  B. subtilis: EX_R_3hcmrs7e_e
-EX_R_3hpt_e
-EX_hco3_e
-EX_lac__L_e
-EX_ppap_e
-
-  ¿que metabolitos se encoentran con flujos metabolicos activos en ambas bacterias bacteria?
-  EX_4hba_e
-EX_4hbald_e
-EX_ca2_e
-EX_cl_e
-EX_co2_e
-EX_cobalt2_e
-EX_cu2_e
-EX_etoh_e
-EX_fe2_e
-EX_fe3_e
-EX_for_e
-EX_glc__D_e
-EX_h2o_e
-EX_h_e
-EX_k_e
-EX_mg2_e
-EX_mn2_e
-EX_na1_e
-EX_nh4_e
-EX_o2_e
-EX_pi_e
-EX_so4_e
-EX_val__L_e
-  b. Para cada bacteria grafica el metabolito: EX_co2_e 
-```text
-# Cargar datos
-flujos = "/workspace/ecoli_vs_bsubtilis/Escherichia_coli_exchange_fluxes.tsv"
-
-df_flujos = pd.read_csv(
-    flujos,
-    sep="\t"
-)
-
-# Seleccionar metabolito
-metabolito_seleccionado = "EX_co2_e"
-
-# Revisar si el metabolito existe
-if metabolito_seleccionado not in df_flujos.columns:
-    print(f"Error: {metabolito_seleccionado} no existe.")
-
-else:
-    plt.figure(figsize=(8, 5))
-
-    plt.plot(
-        df_flujos["cycle"],
-        df_flujos[metabolito_seleccionado],
-        linewidth=2.5
-    )
-
-    plt.title(
-        f"Flujo de {metabolito_seleccionado}",
-        fontweight="bold"
-    )
-
-    plt.xlabel("Ciclo")
-    plt.ylabel("Flux")
-
-    plt.tight_layout()
-    plt.show()
-```
-
-```text
-import matplotlib.pyplot as plt
-import pandas as pd
-
-# Cargar datos
-flujos = "/workspace/ecoli_vs_bsubtilis/Bacillus_subtilis_exchange_fluxes.tsv"
-
-df_flujos = pd.read_csv(
-    flujos,
-    sep="\t"
-)
-
-# Seleccionar metabolito
-metabolito_seleccionado = "EX_co2_e"
-
-# Revisar si el metabolito existe
-if metabolito_seleccionado not in df_flujos.columns:
-    print(f"Error: {metabolito_seleccionado} no existe.")
-
-else:
-    plt.figure(figsize=(8, 5))
-
-    plt.plot(
-        df_flujos["cycle"],
-        df_flujos[metabolito_seleccionado],
-        linewidth=2.5
-    )
-
-    plt.title(
-        f"Flujo de {metabolito_seleccionado}",
-        fontweight="bold"
-    )
-
-    plt.xlabel("Ciclo")
-    plt.ylabel("Flux")
-
-    plt.tight_layout()
-    plt.show()
-```
+  * ¿Cuántos y cuáles metabolitos tienen flujos metabólicos activos para E. coli?
   
-    
-    
+  * Con ayuda de los archivos de flujos metabolico de B. subtilis (Bacillus_subtilis_exchange_fluxes.tsv
+  filtra los metabolitos que tienen flujo metabólico activo.
   
-    
+  * ¿Cuántos y cuáles metabolitos tienen flujos metabólicos activos para E. coli?
+
+  * ¿Qué metabolitos tienen flujos metabólicos activos solo en E. coli? 
+  
+  * ¿Qué metabolitos tienen flujos metabólicos activos solo en B. subtilis? 
+  
+  * ¿Qué metabolitos tiene flujos metabólicos activos en ambas bacterias?
+  
+  * Grafica cómo cambia el consumo de EX_co2_e (dióxido de carbono) en E. coli.
+  
+  * Grafica cómo cambia el consumo de EX_co2_e (dióxido de carbono) en B. subtiles.
 
 
 
